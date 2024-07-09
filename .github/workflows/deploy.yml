@@ -1,0 +1,23 @@
+name: Auto Deployment
+
+# Trigger the workflow on push to main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master # Authenticate to the the server via ssh 
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: | # Run deployment script 
+            cd cicd-laravel
+            git pull origin main
+            composer update
